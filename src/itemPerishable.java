@@ -11,8 +11,8 @@ import java.util.Date;
 public class itemPerishable extends item{
     private Date expireDate;
     
-    public itemPerishable(int uniqueID, int produkID, String itemName, int lokasi, int quantity, Date expireDate){
-        super(uniqueID,produkID,itemName,lokasi,quantity);
+    public itemPerishable(int uniqueID, int produkID, String itemName, String kategori, int lokasi, int quantity, Date expireDate){
+        super(uniqueID,produkID,itemName,kategori,lokasi,quantity);
         this.expireDate=expireDate;
     }
     

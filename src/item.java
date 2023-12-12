@@ -15,16 +15,26 @@ public class item {
     private int uniqueID;
     private int produkID;
     private String itemName;
+    private String kategori;
     private int lokasi;
     private int quantity;
     
-    public item(int uniqueID, int produkID, String itemName, int lokasi, int quantity){
+    public item(int uniqueID, int produkID, String itemName, String kategori, int lokasi, int quantity){
         this.uniqueID=uniqueID;
         this.produkID=produkID;
         this.itemName=itemName;
+        this.kategori=kategori;
         this.lokasi=lokasi;
         this.quantity=quantity;
         
+    }
+
+    public String getKategori() {
+        return kategori;
+    }
+
+    public void setkategori(String kategori) {
+        this.kategori = kategori;
     }
 
     public int getUniqueID() {
