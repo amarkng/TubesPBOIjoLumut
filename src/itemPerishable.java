@@ -3,11 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+import java.util.Date;
 /**
  *
  * @author ImNotplying
  */
-public class itemPerishable {
+public class itemPerishable extends item{
+    private Date expireDate;
     
+    public itemPerishable(int uniqueID, int produkID, String itemName, int lokasi, int quantity, Date expireDate){
+        super(uniqueID,produkID,itemName,lokasi,quantity);
+        this.expireDate=expireDate;
+    }
+    
+    public Date getExpireDate() {
+        return expireDate;
+    }
+
+    public void setExpireDate(Date expireDate) {
+        this.expireDate = expireDate;
+    }
+
 }
