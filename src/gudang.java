@@ -32,7 +32,7 @@ public class gudang {
     }
     
     public boolean isFull() {
-        return lowestEmpty == besarStorage;
+        return lowestEmpty >= besarStorage;
     }
     
     public int getLowestEmpty() {
@@ -57,6 +57,38 @@ public class gudang {
     
     public boolean[] getLokasiTerpakai() {
         return listLokasiTerpakai;
+    }
+
+    public int getStorageID() {
+        return storageID;
+    }
+
+    public void setStorageID(int storageID) {
+        this.storageID = storageID;
+    }
+
+    public int getBesarStorage() {
+        return besarStorage;
+    }
+
+    public void setBesarStorage(int besarStorage) {
+        this.besarStorage = besarStorage;
+    }
+
+    public String getTempatStorage() {
+        return tempatStorage;
+    }
+
+    public void setTempatStorage(String tempatStorage) {
+        this.tempatStorage = tempatStorage;
+    }
+
+    public boolean[] getListLokasiTerpakai() {
+        return listLokasiTerpakai;
+    }
+
+    public void setListLokasiTerpakai(boolean[] listLokasiTerpakai) {
+        this.listLokasiTerpakai = listLokasiTerpakai;
     }
     
     
