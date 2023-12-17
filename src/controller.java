@@ -8,7 +8,7 @@ import java.util.ArrayList;
  *
  * @author ImNotplying
  */
-public class controller {
+public class controller implements interfaceController{
     private ArrayList<item> listItem;
     
     public controller() 
