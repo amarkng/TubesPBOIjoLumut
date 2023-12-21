@@ -16,10 +16,10 @@ public class item {
     private int produkID;
     private String itemName;
     private String kategori;
-    private int lokasi;
+    private String lokasi;
     private int quantity;
     
-    public item(int uniqueID, int produkID, String itemName, String kategori, int lokasi, int quantity){
+    public item(int uniqueID, int produkID, String itemName, String kategori, String lokasi, int quantity){
         this.uniqueID=uniqueID;
         this.produkID=produkID;
         this.itemName=itemName;
@@ -61,11 +61,11 @@ public class item {
         this.itemName = itemName;
     }
 
-    public int getLokasi() {
+    public String getLokasi() {
         return lokasi;
     }
 
-    public void setLokasi(int lokasi) {
+    public void setLokasi(String lokasi) {
         this.lokasi = lokasi;
     }
 

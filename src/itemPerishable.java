@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class itemPerishable extends item{
     private LocalDate expireDate;
     
-    public itemPerishable(int uniqueID, int produkID, String itemName, String kategori, int lokasi, int quantity, LocalDate expireDate){
+    public itemPerishable(int uniqueID, int produkID, String itemName, String kategori, String lokasi, int quantity, LocalDate expireDate){
         super(uniqueID,produkID,itemName,kategori,lokasi,quantity);
         this.expireDate=expireDate;
     }
