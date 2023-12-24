@@ -33,7 +33,25 @@ public class GUI extends javax.swing.JFrame {
         setupGudang();
         setupController();
         setupUnitCombo();
+        setupKategoriCombo();
         //System.out.println(Gudang.get(0).controller.getListItem().get(0).getItemName());
+    }
+    
+    public final void setupKategoriCombo(){
+        db.connect();
+        String sql = "SELECT kategori FROM kategori";
+        database.rs = db.view(sql);
+        try {
+            DefaultComboBoxModel<String> newmodel = new DefaultComboBoxModel<>();
+            newmodel.addElement("Any");
+            while (database.rs.next()) {
+                newmodel.addElement(database.rs.getString("kategori"));
+            }
+            comboKategori.setModel(newmodel);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        db.disconnect();
     }
     
     public final void setupUnitCombo(){
