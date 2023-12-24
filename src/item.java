@@ -19,7 +19,7 @@ public class item {
     private String lokasi;
     private int quantity;
     
-    public item(int quantity, int uniqueID, String itemName, String kategori, String lokasi, int produkID){
+    public item(int uniqueID, int produkID, String itemName, String kategori, String lokasi, int quantity){
         this.uniqueID=uniqueID;
         this.produkID=produkID;
         this.itemName=itemName;

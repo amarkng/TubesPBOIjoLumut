@@ -33,21 +33,23 @@ public class GUI extends javax.swing.JFrame {
         Item = new ArrayList<>();
         try {
             while (database.rs.next()) {
-                int quantity = database.rs.getInt(1);
-                int uniqueID = database.rs.getInt(2);
+                
+                int uniqueID = database.rs.getInt(1);
+                int produkID = database.rs.getInt(2);
                 String itemName = database.rs.getString(3);
                 String kategori = database.rs.getString(4);
                 String lokasi = database.rs.getString(5);
-                int produkID = database.rs.getInt(6);
+                int quantity = database.rs.getInt(6);
 
-                Item.add(new item(quantity, uniqueID, itemName, kategori, lokasi, produkID));
+                Item.add(new item(uniqueID, produkID, itemName, kategori, lokasi, quantity));
             }
 
             DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
             model.setRowCount(0); 
             for (int i = 0; i < Item.size(); i++) {
                 item ITEM = Item.get(i);
-                Object[] row = { i + 1, ITEM.getItemName(), ITEM.getKategori(), ITEM.getLokasi(), ITEM.getQuantity() };
+                System.out.println(ITEM.getProdukID());
+                Object[] row = { i + 1, ITEM.getProdukID(), ITEM.getItemName(), ITEM.getKategori(), ITEM.getLokasi(), ITEM.getQuantity(), "-"};
                 model.addRow(row);
             }
         } catch (SQLException e) {
@@ -96,7 +98,7 @@ public class GUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Admin Control Unit");
-        setPreferredSize(new java.awt.Dimension(800, 490));
+        setResizable(false);
         setSize(new java.awt.Dimension(820, 500));
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -106,47 +108,71 @@ public class GUI extends javax.swing.JFrame {
         jTable2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nama", "Kategori", "Lokasi"
+                "ID", "ProdukID", "Nama", "Kategori", "Lokasi", "Jumlah", "Expire"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable2.setColumnSelectionAllowed(true);
         jTable2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jTable2.setPreferredSize(new java.awt.Dimension(400, 620));
         jTable2.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(jTable2);
         jTable2.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        if (jTable2.getColumnModel().getColumnCount() > 0) {
+            jTable2.getColumnModel().getColumn(0).setMinWidth(70);
+            jTable2.getColumnModel().getColumn(0).setPreferredWidth(70);
+            jTable2.getColumnModel().getColumn(1).setMinWidth(70);
+            jTable2.getColumnModel().getColumn(1).setPreferredWidth(70);
+            jTable2.getColumnModel().getColumn(2).setMinWidth(200);
+            jTable2.getColumnModel().getColumn(2).setPreferredWidth(200);
+            jTable2.getColumnModel().getColumn(3).setMinWidth(150);
+            jTable2.getColumnModel().getColumn(3).setPreferredWidth(150);
+            jTable2.getColumnModel().getColumn(4).setMinWidth(70);
+            jTable2.getColumnModel().getColumn(4).setPreferredWidth(70);
+            jTable2.getColumnModel().getColumn(5).setMinWidth(50);
+            jTable2.getColumnModel().getColumn(5).setPreferredWidth(50);
+            jTable2.getColumnModel().getColumn(6).setPreferredWidth(150);
+        }
 
         jLabel6.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
         jLabel6.setText("Filter");
@@ -335,9 +361,7 @@ public class GUI extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jLabel24, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel13Layout.createSequentialGroup()
-                                .addComponent(AddKategoriButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(4, 4, 4))))
+                            .addComponent(AddKategoriButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jLabel21)
                     .addGroup(jPanel13Layout.createSequentialGroup()
                         .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -391,7 +415,7 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 759, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -414,7 +438,7 @@ public class GUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 794, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1162, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
