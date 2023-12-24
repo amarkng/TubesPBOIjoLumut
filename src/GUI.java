@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -24,6 +25,8 @@ public class GUI extends javax.swing.JFrame {
     public static ArrayList<gudang> Gudang;
     public static int latestUID = 0;
     public static int latestPID = 0;
+    public static int latestGID = 0;
+    public static int latestKID = 0;
     
     public GUI() {
         initComponents();
@@ -39,13 +42,17 @@ public class GUI extends javax.swing.JFrame {
     
     public final void setupKategoriCombo(){
         db.connect();
-        String sql = "SELECT kategori FROM kategori";
+        String sql = "SELECT * FROM kategori";
         database.rs = db.view(sql);
         try {
             DefaultComboBoxModel<String> newmodel = new DefaultComboBoxModel<>();
             newmodel.addElement("Any");
             while (database.rs.next()) {
+                int id = database.rs.getInt(1);
                 newmodel.addElement(database.rs.getString("kategori"));
+                if (id > latestKID) {
+                    latestKID = id;
+                }
             }
             comboKategori.setModel(newmodel);
         } catch (SQLException e) {
@@ -108,6 +115,9 @@ public class GUI extends javax.swing.JFrame {
                 int storageID = database.rs.getInt(1);
                 int besarStorage = database.rs.getInt(2);
                 String tempatStorage = database.rs.getString(3);
+                if (storageID > latestGID) {
+                    latestGID = storageID;
+                }
                 Gudang.add(new gudang(storageID, besarStorage, tempatStorage));
             }
             db.disconnect();
@@ -196,14 +206,12 @@ public class GUI extends javax.swing.JFrame {
         comboUnit = new javax.swing.JComboBox<>();
         jPanel13 = new javax.swing.JPanel();
         jLabel21 = new javax.swing.JLabel();
-        jButton9 = new javax.swing.JButton();
         EditItemButton = new javax.swing.JButton();
         jLabel22 = new javax.swing.JLabel();
         jLabel23 = new javax.swing.JLabel();
         AddItemButton = new javax.swing.JButton();
         jLabel24 = new javax.swing.JLabel();
         AddKategoriButton = new javax.swing.JButton();
-        jLabel25 = new javax.swing.JLabel();
         AddGudangButton = new javax.swing.JButton();
         jLabel26 = new javax.swing.JLabel();
         buttonDelete = new javax.swing.JButton();
@@ -435,14 +443,6 @@ public class GUI extends javax.swing.JFrame {
         jLabel21.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
         jLabel21.setText("Control");
 
-        jButton9.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jButton9.setText("Edit");
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
-
         EditItemButton.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         EditItemButton.setText("Edit");
         EditItemButton.addActionListener(new java.awt.event.ActionListener() {
@@ -475,9 +475,6 @@ public class GUI extends javax.swing.JFrame {
                 AddKategoriButtonActionPerformed(evt);
             }
         });
-
-        jLabel25.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jLabel25.setText("Pindah Gudang");
 
         AddGudangButton.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         AddGudangButton.setText("Add");
@@ -526,16 +523,16 @@ public class GUI extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel13Layout.createSequentialGroup()
                                 .addGap(2, 2, 2)
                                 .addComponent(AddGudangButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel25)
-                            .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel24, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(AddKategoriButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel27, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(10, Short.MAX_VALUE))
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel13Layout.createSequentialGroup()
+                                .addGap(141, 141, 141)
+                                .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel13Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jLabel24, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(AddKategoriButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel13Layout.setVerticalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -557,19 +554,14 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(buttonDelete)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
-                            .addComponent(jLabel26)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(AddGudangButton))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
-                            .addComponent(jLabel24)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(AddKategoriButton)))
-                    .addGroup(jPanel13Layout.createSequentialGroup()
-                        .addComponent(jLabel25)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                        .addComponent(jLabel26)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton9)))
+                        .addComponent(AddGudangButton))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                        .addComponent(jLabel24)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(AddKategoriButton)))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
@@ -627,15 +619,24 @@ public class GUI extends javax.swing.JFrame {
         edit.setVisible(true);
     }//GEN-LAST:event_AddGudangButtonActionPerformed
 
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        PindahGudangGUI edit = new PindahGudangGUI(this,true);
-        edit.setVisible(true);
-    }//GEN-LAST:event_jButton9ActionPerformed
-
     private void EditItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditItemButtonActionPerformed
         // TODO add your handling code here:
-        EditItemGUI edit = new EditItemGUI(this,true);
-        edit.setVisible(true);
+        int selected = jTable2.getSelectedRow();
+        if (selected != -1){
+            String nama = (String) jTable2.getValueAt(selected, 2);
+            String kategori = (String) jTable2.getValueAt(selected, 3);
+            String gudang = (String) jTable2.getValueAt(selected, 4);
+            int quantity = (int) jTable2.getValueAt(selected, 5);
+            String perishable = (String) jTable2.getValueAt(selected, 6);
+            int uid = (int) jTable2.getValueAt(selected, 0);
+            EditItemGUI edit = new EditItemGUI(this,true, nama, kategori, gudang, quantity, perishable, uid);
+            edit.setVisible(true);
+        } else {
+                JOptionPane.showMessageDialog(this, "Please select a row first.");
+        }
+
+
+
     }//GEN-LAST:event_EditItemButtonActionPerformed
 
     private void AddItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddItemButtonActionPerformed
@@ -844,7 +845,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JTextField fieldID;
     private javax.swing.JTextField fieldNama;
     private javax.swing.JTextField fieldPID;
-    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -853,7 +853,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
-    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel6;

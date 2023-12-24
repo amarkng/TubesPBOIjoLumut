@@ -49,19 +49,6 @@ public class TambahItemGUI extends javax.swing.JDialog {
             newmodel.addElement(GUI.Gudang.get(i).getTempatStorage());
         }
         comboGudang.setModel(newmodel);
-//        db.connect();
-//        String sql = "SELECT tempatstorage FROM gudang";
-//        database.rs = db.view(sql);
-//        try {
-//            DefaultComboBoxModel<String> newmodel = new DefaultComboBoxModel<>();
-//            while (database.rs.next()) {
-//                newmodel.addElement(database.rs.getString("tempatstorage"));
-//            }
-//            jComboBox1.setModel(newmodel);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        db.disconnect();
     }
 
     /**
