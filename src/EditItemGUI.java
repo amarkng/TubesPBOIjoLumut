@@ -65,6 +65,8 @@ public class EditItemGUI extends javax.swing.JDialog {
         DeleteButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Edit Item");
+        setAlwaysOnTop(true);
         setResizable(false);
 
         jPanel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -201,7 +203,6 @@ public class EditItemGUI extends javax.swing.JDialog {
         UpdateButton.setText("Update");
         UpdateButton.setBorder(null);
         UpdateButton.setBorderPainted(false);
-        UpdateButton.setOpaque(true);
         UpdateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 UpdateButtonActionPerformed(evt);
@@ -246,7 +247,6 @@ public class EditItemGUI extends javax.swing.JDialog {
         DeleteButton.setText("Delete");
         DeleteButton.setBorder(null);
         DeleteButton.setBorderPainted(false);
-        DeleteButton.setOpaque(true);
         DeleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 DeleteButtonActionPerformed(evt);
