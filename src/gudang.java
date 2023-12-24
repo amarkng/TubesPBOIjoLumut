@@ -15,8 +15,8 @@
 public class gudang {
     private int storageID;
     private int besarStorage;
-    private controller controller;
-    private controllerPerishable controllerPerishable;
+    controller controller;
+    controllerPerishable controllerPerishable;
     private String tempatStorage;
     private boolean[] listLokasiTerpakai;
     private int lowestEmpty;

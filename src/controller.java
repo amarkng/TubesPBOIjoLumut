@@ -100,4 +100,9 @@ public class controller implements interfaceController{
             gudangAkhir.getLokasiTerpakai()[lokasiAkhir] = true;
         }
     }
+
+    public ArrayList<item> getListItem() {
+        return listItem;
+    }
+    
 }

@@ -2,6 +2,8 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -18,13 +20,73 @@ public class GUI extends javax.swing.JFrame {
     private database db;
     private ArrayList<item> Item;
     private item _item;
+    public static ArrayList<gudang> Gudang;
+    public static int latestUID = 0;
+    public static int latestPID = 0;
     
     public GUI() {
         initComponents();
         db = new database();
         db.connect();
         fetchData();
+        setupGudang();
+        setupController();
+        //System.out.println(Gudang.get(0).controller.getListItem().get(0).getItemName());
     }
+    
+    public final void setupController() {
+        try {
+            db.connect();
+            String sql = "SELECT * FROM item";
+            database.rs = db.view(sql);
+            while (database.rs.next()) {
+                
+                int uniqueID = database.rs.getInt(1);
+                int produkID = database.rs.getInt(2);
+                String itemName = database.rs.getString(3);
+                String kategori = database.rs.getString(4);
+                String lokasi = database.rs.getString(5);
+                int quantity = database.rs.getInt(6);
+                
+                if (uniqueID > latestUID) {
+                    latestUID = uniqueID;
+                }
+                if (produkID > latestPID) {
+                    latestPID = produkID;
+                }
+                
+                item tempitem = new item(uniqueID, produkID, itemName, kategori, lokasi, quantity);
+                for (int i = 0; i < Gudang.size(); i++) {
+                    if (Gudang.get(i).getTempatStorage().equals(lokasi)) {
+                        Gudang.get(i).controller.tambahItem(tempitem, Gudang.get(i));
+                        break;
+                    }
+                }
+            }
+            db.disconnect();
+        } catch (SQLException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public final void setupGudang(){
+        try {
+            Gudang = new ArrayList<>();
+            db.connect();
+            String sql = "SELECT * FROM gudang";
+            database.rs = db.view(sql);
+            while (database.rs.next()) {
+                int storageID = database.rs.getInt(1);
+                int besarStorage = database.rs.getInt(2);
+                String tempatStorage = database.rs.getString(3);
+                Gudang.add(new gudang(storageID, besarStorage, tempatStorage));
+            }
+            db.disconnect();
+        } catch (SQLException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public final void fetchData(){
         
         db.connect();
@@ -48,10 +110,26 @@ public class GUI extends javax.swing.JFrame {
             model.setRowCount(0); 
             for (int i = 0; i < Item.size(); i++) {
                 item ITEM = Item.get(i);
-                System.out.println(ITEM.getProdukID());
-                Object[] row = { i + 1, ITEM.getProdukID(), ITEM.getItemName(), ITEM.getKategori(), ITEM.getLokasi(), ITEM.getQuantity(), "-"};
+                Object[] row = { ITEM.getUniqueID(), ITEM.getProdukID(), ITEM.getItemName(), ITEM.getKategori(), ITEM.getLokasi(), ITEM.getQuantity(), "-"};
                 model.addRow(row);
             }
+            
+            cari = "SELECT * FROM itemperishable";
+            database.rs = db.view(cari);
+            while (database.rs.next()) {
+                
+                int uniqueID = database.rs.getInt(1);
+                int produkID = database.rs.getInt(2);
+                String itemName = database.rs.getString(3);
+                String kategori = database.rs.getString(4);
+                String lokasi = database.rs.getString(5);
+                int quantity = database.rs.getInt(6);
+                String expire = database.rs.getString(7);
+
+                Object[] row = { uniqueID, produkID, itemName, kategori, lokasi, quantity, expire};
+                model.addRow(row);
+            }
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -95,11 +173,20 @@ public class GUI extends javax.swing.JFrame {
         jLabel25 = new javax.swing.JLabel();
         AddGudangButton = new javax.swing.JButton();
         jLabel26 = new javax.swing.JLabel();
+        buttonDelete = new javax.swing.JButton();
+        jLabel27 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Admin Control Unit");
         setResizable(false);
         setSize(new java.awt.Dimension(820, 500));
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+            }
+        });
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -340,6 +427,17 @@ public class GUI extends javax.swing.JFrame {
         jLabel26.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jLabel26.setText("Tambah Gudang");
 
+        buttonDelete.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        buttonDelete.setText("Delete");
+        buttonDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDeleteActionPerformed(evt);
+            }
+        });
+
+        jLabel27.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        jLabel27.setText("Delete Selected");
+
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
         jPanel13Layout.setHorizontalGroup(
@@ -350,18 +448,14 @@ public class GUI extends javax.swing.JFrame {
                     .addGroup(jPanel13Layout.createSequentialGroup()
                         .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(AddItemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(AddItemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel13Layout.createSequentialGroup()
-                                .addGap(28, 28, 28)
-                                .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel13Layout.createSequentialGroup()
+                                .addComponent(EditItemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(EditItemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel24, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(AddKategoriButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(buttonDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jLabel21)
                     .addGroup(jPanel13Layout.createSequentialGroup()
                         .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -369,38 +463,50 @@ public class GUI extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel13Layout.createSequentialGroup()
                                 .addGap(2, 2, 2)
                                 .addComponent(AddGudangButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel25)
-                            .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel24, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(AddKategoriButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel27, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
         jPanel13Layout.setVerticalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel13Layout.createSequentialGroup()
-                .addComponent(jLabel21)
-                .addGap(18, 18, 18)
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel13Layout.createSequentialGroup()
-                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel22)
-                            .addComponent(jLabel23))
+                        .addComponent(jLabel21)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel23)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(AddItemButton))
                     .addGroup(jPanel13Layout.createSequentialGroup()
-                        .addComponent(jLabel24)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(AddKategoriButton)
-                            .addComponent(EditItemButton))))
+                            .addComponent(jLabel22)
+                            .addComponent(jLabel27))
+                        .addGap(32, 32, 32))
+                    .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(EditItemButton)
+                        .addComponent(buttonDelete)))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel26)
-                    .addComponent(jLabel25))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(AddGudangButton)
-                    .addComponent(jButton9))
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                            .addComponent(jLabel26)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(AddGudangButton))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                            .addComponent(jLabel24)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(AddKategoriButton)))
+                    .addGroup(jPanel13Layout.createSequentialGroup()
+                        .addComponent(jLabel25)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton9)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -415,7 +521,7 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 759, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 747, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -484,6 +590,36 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        // TODO add your handling code here:
+        fetchData();
+        setupGudang();
+        setupController();
+    }//GEN-LAST:event_formWindowGainedFocus
+
+    private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerformed
+        // TODO add your handling code here:
+        int rowindex = jTable2.getSelectedRow();
+        if (rowindex != -1) {
+            int uniqueID = (int) jTable2.getValueAt(rowindex, 0);
+            String sql;
+            String expire = (String) jTable2.getValueAt(rowindex, 6);
+            if ("-".equals(expire)){
+                sql = "DELETE FROM item WHERE uniqueID = '"+uniqueID+"'";
+            } else {
+                sql = "DELETE FROM itemperishable WHERE uniqueID = '"+uniqueID+"'";
+            }
+            
+            db.connect();
+            db.query(sql);
+            db.disconnect();
+            fetchData();
+            setupGudang();
+            setupController();
+        }
+        
+    }//GEN-LAST:event_buttonDeleteActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -525,6 +661,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton AddKategoriButton;
     private javax.swing.JButton EditItemButton;
     private javax.swing.JButton SearchButton;
+    private javax.swing.JButton buttonDelete;
     private javax.swing.JButton jButton9;
     private javax.swing.JComboBox<String> jComboBox4;
     private javax.swing.JComboBox<String> jComboBox5;
@@ -537,6 +674,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
