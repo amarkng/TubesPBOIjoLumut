@@ -3,8 +3,11 @@ import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -199,5 +202,41 @@ public class controllerTable {
             editItemGUI.checkPerishable.setEnabled(false);
         }
     }
-    
+
+    void selectExpired(GUI gui) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        for (int i = 0; i < gui.jTable2.getRowCount(); i++) {
+            String perishableText = (String) gui.jTable2.getValueAt(i, 6);
+            if (perishableText.equals("-")) {
+                continue;
+            }
+            LocalDate perishableDate = null;
+            try {
+                perishableDate = LocalDate.parse(perishableText, formatter);
+                if (perishableDate.isBefore(LocalDate.now())) {
+                    gui.jTable2.setRowSelectionInterval(i, i);
+                    break;
+                }
+            } catch (DateTimeParseException e) {
+                throw new DateTimeParseException("Invalid date format", perishableText, 0);
+            }
+        }
+        for (int i = 0; i < gui.jTable2.getRowCount(); i++) {
+            String perishableText = (String) gui.jTable2.getValueAt(i, 6);
+            if (perishableText.equals("-")) {
+                continue;
+            }
+            LocalDate perishableDate = null;
+            try {
+                perishableDate = LocalDate.parse(perishableText, formatter);
+                if (perishableDate.isBefore(LocalDate.now())) {
+                    gui.jTable2.addRowSelectionInterval(i, i);
+                }
+            } catch (DateTimeParseException e) {
+                throw new DateTimeParseException("Invalid date format", perishableText, 0);
+
+            }
+        }
+    }
+
 }
