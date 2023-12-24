@@ -264,20 +264,29 @@ public class TambahItemGUI extends javax.swing.JDialog {
 
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddActionPerformed
         // TODO add your handling code here:        
-        if(!checkPerishable.isSelected()){
-            GUI.conItem.addItem(this);
-            this.dispose();
-        } else {
-            try{
-                GUI.conItemPe.addItem(this);
-                this.dispose();
-            } catch (DateTimeParseException e){
-                JOptionPane.showMessageDialog(this, "Please input the expiry date in dd-MM-yyy.");
+        if (!GUI.conGudang.cekPenuh(comboGudang.getSelectedItem().toString())) {
+            if (!checkPerishable.isSelected()) {
+                if (!GUI.conGudang.cekOverfill(comboGudang.getSelectedItem().toString(), Integer.parseInt(fieldQuantity.getText()))) {
+                    GUI.conItem.addItem(this);
+                    this.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Quantity melebihi kapasitas!");
+                }
+            } else {
+                if (!GUI.conGudang.cekOverfill(comboGudang.getSelectedItem().toString(), Integer.parseInt(fieldQuantity.getText()))) {
+                    try {
+                        GUI.conItemPe.addItem(this);
+                        this.dispose();
+                    } catch (DateTimeParseException e) {
+                        JOptionPane.showMessageDialog(this, "Please input the expiry date in dd-MM-yyy.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Quantity melebihi kapasitas!");
+                }
             }
-            
-            
+        } else {
+            JOptionPane.showMessageDialog(this, "Gudang Penuh!");
         }
-        
     }//GEN-LAST:event_buttonAddActionPerformed
 
     private void checkPerishableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkPerishableActionPerformed

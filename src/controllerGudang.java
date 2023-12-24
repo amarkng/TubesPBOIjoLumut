@@ -16,6 +16,7 @@ import javax.swing.DefaultComboBoxModel;
  * @author ImNotplying
  */
 public class controllerGudang {
+    private database db = new database();
 
     public final void setupUnitCombo(GUI gui) {
         DefaultComboBoxModel<String> newmodel = new DefaultComboBoxModel<>();
@@ -65,4 +66,44 @@ public class controllerGudang {
         tambahItemGUI.comboGudang.setModel(newmodel);
     }
     
+    boolean cekPenuh(String gudang){
+        int besar = 0;
+        for (int i = 0; i < GUI.Gudang.size(); i++) {
+            if (GUI.Gudang.get(i).getTempatStorage().equals(gudang)) {
+                besar = GUI.Gudang.get(i).getBesarStorage();
+            }
+        }
+        int jumlah = 0;
+        db.connect();
+        String sql = "SELECT * FROM item WHERE lokasi = '" + gudang + "'";
+        database.rs = db.view(sql);
+        try {
+            while (database.rs.next()) {
+                jumlah += database.rs.getInt(6);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(controllerGudang.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return jumlah >= besar;
+    }
+    boolean cekOverfill(String gudang, int qua){
+        int besar = 0;
+        for (int i = 0; i < GUI.Gudang.size(); i++) {
+            if (GUI.Gudang.get(i).getTempatStorage().equals(gudang)) {
+                besar = GUI.Gudang.get(i).getBesarStorage();
+            }
+        }
+        int jumlah = 0;
+        db.connect();
+        String sql = "SELECT * FROM item WHERE lokasi = '" + gudang + "'";
+        database.rs = db.view(sql);
+        try {
+            while (database.rs.next()) {
+                jumlah += database.rs.getInt(6);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(controllerGudang.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return jumlah + qua > besar;
+    }
 }
