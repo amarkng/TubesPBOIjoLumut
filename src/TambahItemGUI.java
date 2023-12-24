@@ -3,7 +3,10 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -15,41 +18,19 @@ import javax.swing.DefaultComboBoxModel;
  * @author Mad
  */
 public class TambahItemGUI extends javax.swing.JDialog {
-    private database db = new database();
+    public database db = new database();
     /**
      * Creates new form TambahItemGUI
      */
-    public TambahItemGUI(java.awt.Frame parent, boolean modal, item Item) {
+    public TambahItemGUI(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        gudangCombo();
-        kategoriCombo();
+        GUI.conGudang.gudangComboTambah(this);
+        GUI.conKategori.kategoriComboTambah(this);
         
     }
     
-    private void kategoriCombo(){
-        db.connect();
-        String sql = "SELECT kategori FROM kategori";
-        database.rs = db.view(sql);
-        try {
-            DefaultComboBoxModel<String> newmodel = new DefaultComboBoxModel<>();
-            while (database.rs.next()) {
-                newmodel.addElement(database.rs.getString("kategori"));
-            }
-            comboKategori.setModel(newmodel);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        db.disconnect();
-    }
     
-    private void gudangCombo(){
-        DefaultComboBoxModel<String> newmodel = new DefaultComboBoxModel<>();
-        for (int i = 0; i < GUI.Gudang.size(); i++) {
-            newmodel.addElement(GUI.Gudang.get(i).getTempatStorage());
-        }
-        comboGudang.setModel(newmodel);
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -211,7 +192,7 @@ public class TambahItemGUI extends javax.swing.JDialog {
 
         fieldPerishable.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         fieldPerishable.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        fieldPerishable.setText("dd/mm/yyyy");
+        fieldPerishable.setText("dd-MM-yyyy");
         fieldPerishable.setEnabled(false);
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
@@ -282,31 +263,19 @@ public class TambahItemGUI extends javax.swing.JDialog {
     }//GEN-LAST:event_comboGudangActionPerformed
 
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddActionPerformed
-        // TODO add your handling code here:
-        String nama = fieldNama.getText();
-        String kategori = comboKategori.getSelectedItem().toString();
-        int quantity = Integer.parseInt(fieldQuantity.getText());
-        String perishable = fieldPerishable.getText();
-        String gudang = comboGudang.getSelectedItem().toString();
-        
+        // TODO add your handling code here:        
         if(!checkPerishable.isSelected()){
-            GUI.latestPID++;
-            GUI.latestUID++;
-            db.connect();
-            String sql = "INSERT INTO item (uniqueID, produkID, nama, kategori, lokasi, quantity) VALUES ('"+GUI.latestUID+"', '"+GUI.latestPID+"', '"+nama+"', '"+kategori+"', '"+gudang+"', '"+quantity+"')";
-            db.query(sql);
-            db.disconnect();
+            GUI.conItem.addItem(this);
             this.dispose();
         } else {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyy");
-            perishable = perishable.formatted(formatter);
-            GUI.latestPID++;
-            GUI.latestUID++;
-            db.connect();
-            String sql = "INSERT INTO itemperishable (uniqueID, produkID, nama, kategori, lokasi, quantity, expire) VALUES ('"+GUI.latestUID+"', '"+GUI.latestPID+"', '"+nama+"', '"+kategori+"', '"+gudang+"', '"+quantity+"', '"+perishable+"')";
-            db.query(sql);
-            db.disconnect();
-            this.dispose();
+            try{
+                GUI.conItemPe.addItem(this);
+                this.dispose();
+            } catch (DateTimeParseException e){
+                JOptionPane.showMessageDialog(this, "Please input the expiry date in dd-MM-yyy.");
+            }
+            
+            
         }
         
     }//GEN-LAST:event_buttonAddActionPerformed
@@ -351,7 +320,7 @@ public class TambahItemGUI extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                TambahItemGUI dialog = new TambahItemGUI(new javax.swing.JFrame(), true, null);
+                TambahItemGUI dialog = new TambahItemGUI(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -365,12 +334,12 @@ public class TambahItemGUI extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonAdd;
-    private javax.swing.JCheckBox checkPerishable;
-    private javax.swing.JComboBox<String> comboGudang;
-    private javax.swing.JComboBox<String> comboKategori;
-    private javax.swing.JTextField fieldNama;
-    private javax.swing.JTextField fieldPerishable;
-    private javax.swing.JTextField fieldQuantity;
+    public javax.swing.JCheckBox checkPerishable;
+    public javax.swing.JComboBox<String> comboGudang;
+    public javax.swing.JComboBox<String> comboKategori;
+    public javax.swing.JTextField fieldNama;
+    public javax.swing.JTextField fieldPerishable;
+    public javax.swing.JTextField fieldQuantity;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel16;

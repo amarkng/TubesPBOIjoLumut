@@ -8,7 +8,7 @@
  * @author Mad
  */
 public class TambahGudangGUI extends javax.swing.JDialog {
-    private database db = new database();
+    public database db = new database();
     /**
      * Creates new form TambahGudangGUI
      */
@@ -56,6 +56,11 @@ public class TambahGudangGUI extends javax.swing.JDialog {
 
         fieldBesar.setText("100");
         fieldBesar.setPreferredSize(new java.awt.Dimension(84, 25));
+        fieldBesar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fieldBesarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -128,15 +133,13 @@ public class TambahGudangGUI extends javax.swing.JDialog {
 
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddActionPerformed
         // TODO add your handling code here:
-        GUI.latestGID++;
-        String tempatStorage = fieldGudang.getText();
-        int besarStorage = Integer.parseInt(fieldBesar.getText());
-        String sql = "INSERT INTO gudang VALUES (" + GUI.latestGID + ", " + besarStorage + ", '" + tempatStorage + "')";
-        db.connect();
-        db.query(sql);
-        db.disconnect();
+        GUI.conGudang.tambahGudang(this);
         this.dispose();
     }//GEN-LAST:event_buttonAddActionPerformed
+
+    private void fieldBesarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldBesarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fieldBesarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -182,8 +185,8 @@ public class TambahGudangGUI extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonAdd;
-    private javax.swing.JTextField fieldBesar;
-    private javax.swing.JTextField fieldGudang;
+    public javax.swing.JTextField fieldBesar;
+    public javax.swing.JTextField fieldGudang;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;

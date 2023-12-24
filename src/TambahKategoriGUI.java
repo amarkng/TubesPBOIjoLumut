@@ -8,7 +8,7 @@
  * @author Mad
  */
 public class TambahKategoriGUI extends javax.swing.JDialog {
-    private database db = new database();
+    public database db = new database();
     /**
      * Creates new form TambahKategoriGUI
      */
@@ -108,12 +108,7 @@ public class TambahKategoriGUI extends javax.swing.JDialog {
 
     private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddActionPerformed
         // TODO add your handling code here:
-        GUI.latestKID++;
-        String kategori = fieldKategori.getText();
-        String sql = "INSERT INTO kategori VALUES (" + GUI.latestKID + ", '" + kategori + "')";
-        db.connect();
-        db.query(sql);
-        db.disconnect();
+        GUI.conKategori.addKategori(this);
         this.dispose();
     }//GEN-LAST:event_buttonAddActionPerformed
 
@@ -161,7 +156,7 @@ public class TambahKategoriGUI extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonAdd;
-    private javax.swing.JTextField fieldKategori;
+    public javax.swing.JTextField fieldKategori;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel10;

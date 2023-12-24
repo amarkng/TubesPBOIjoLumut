@@ -19,9 +19,12 @@ import javax.swing.table.DefaultTableModel;
  * @author ImNotplying
  */
 public class GUI extends javax.swing.JFrame {
-    private database db;
-    private ArrayList<item> Item;
-    private item _item;
+    public database db;
+    public static controllerKategori conKategori = new controllerKategori();
+    public static controllerGudang conGudang =  new controllerGudang();
+    public static controllerTable conTable = new controllerTable();
+    public static controllerItem conItem = new controllerItem();
+    public static controllerItemPerishable conItemPe = new controllerItemPerishable();
     public static ArrayList<gudang> Gudang;
     public static int latestUID = 0;
     public static int latestPID = 0;
@@ -32,148 +35,15 @@ public class GUI extends javax.swing.JFrame {
         initComponents();
         db = new database();
         db.connect();
-        fetchData();
-        setupGudang();
-        setupController();
-        setupUnitCombo();
-        setupKategoriCombo();
-        //System.out.println(Gudang.get(0).controller.getListItem().get(0).getItemName());
+        //conTable.fetchData(this);
+        conTable.fetchFiltered(this);
+        conGudang.setupGudang(this);
+        conGudang.setupUnitCombo(this);
+        conKategori.setupKategoriCombo(this);
+        conTable.UpdateItemIDs(this);
     }
     
-    public final void setupKategoriCombo(){
-        db.connect();
-        String sql = "SELECT * FROM kategori";
-        database.rs = db.view(sql);
-        try {
-            DefaultComboBoxModel<String> newmodel = new DefaultComboBoxModel<>();
-            newmodel.addElement("Any");
-            while (database.rs.next()) {
-                int id = database.rs.getInt(1);
-                newmodel.addElement(database.rs.getString("kategori"));
-                if (id > latestKID) {
-                    latestKID = id;
-                }
-            }
-            comboKategori.setModel(newmodel);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        db.disconnect();
-    }
     
-    public final void setupUnitCombo(){
-        DefaultComboBoxModel<String> newmodel = new DefaultComboBoxModel<>();
-        newmodel.addElement("Any");
-        for (int i = 0; i < GUI.Gudang.size(); i++) {
-            newmodel.addElement(GUI.Gudang.get(i).getTempatStorage());
-        }
-        comboUnit.setModel(newmodel);
-    }
-    
-    public final void setupController() {
-        try {
-            db.connect();
-            String sql = "SELECT * FROM item";
-            database.rs = db.view(sql);
-            while (database.rs.next()) {
-                
-                int uniqueID = database.rs.getInt(1);
-                int produkID = database.rs.getInt(2);
-                String itemName = database.rs.getString(3);
-                String kategori = database.rs.getString(4);
-                String lokasi = database.rs.getString(5);
-                int quantity = database.rs.getInt(6);
-                
-                if (uniqueID > latestUID) {
-                    latestUID = uniqueID;
-                }
-                if (produkID > latestPID) {
-                    latestPID = produkID;
-                }
-                
-                item tempitem = new item(uniqueID, produkID, itemName, kategori, lokasi, quantity);
-                for (int i = 0; i < Gudang.size(); i++) {
-                    if (Gudang.get(i).getTempatStorage().equals(lokasi)) {
-                        Gudang.get(i).controller.tambahItem(tempitem, Gudang.get(i));
-                        break;
-                    }
-                }
-            }
-            db.disconnect();
-        } catch (SQLException ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    public final void setupGudang(){
-        try {
-            Gudang = new ArrayList<>();
-            db.connect();
-            String sql = "SELECT * FROM gudang";
-            database.rs = db.view(sql);
-            while (database.rs.next()) {
-                int storageID = database.rs.getInt(1);
-                int besarStorage = database.rs.getInt(2);
-                String tempatStorage = database.rs.getString(3);
-                if (storageID > latestGID) {
-                    latestGID = storageID;
-                }
-                Gudang.add(new gudang(storageID, besarStorage, tempatStorage));
-            }
-            db.disconnect();
-        } catch (SQLException ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    public final void fetchData(){
-        
-        db.connect();
-        String cari = "SELECT * FROM item ";
-        database.rs = db.view(cari);
-        Item = new ArrayList<>();
-        try {
-            while (database.rs.next()) {
-                
-                int uniqueID = database.rs.getInt(1);
-                int produkID = database.rs.getInt(2);
-                String itemName = database.rs.getString(3);
-                String kategori = database.rs.getString(4);
-                String lokasi = database.rs.getString(5);
-                int quantity = database.rs.getInt(6);
-
-                Item.add(new item(uniqueID, produkID, itemName, kategori, lokasi, quantity));
-            }
-
-            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-            model.setRowCount(0); 
-            for (int i = 0; i < Item.size(); i++) {
-                item ITEM = Item.get(i);
-                Object[] row = { ITEM.getUniqueID(), ITEM.getProdukID(), ITEM.getItemName(), ITEM.getKategori(), ITEM.getLokasi(), ITEM.getQuantity(), "-"};
-                model.addRow(row);
-            }
-            
-            cari = "SELECT * FROM itemperishable";
-            database.rs = db.view(cari);
-            while (database.rs.next()) {
-                
-                int uniqueID = database.rs.getInt(1);
-                int produkID = database.rs.getInt(2);
-                String itemName = database.rs.getString(3);
-                String kategori = database.rs.getString(4);
-                String lokasi = database.rs.getString(5);
-                int quantity = database.rs.getInt(6);
-                String expire = database.rs.getString(7);
-
-                Object[] row = { uniqueID, produkID, itemName, kategori, lokasi, quantity, expire};
-                model.addRow(row);
-            }
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        db.disconnect();
-    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -641,7 +511,8 @@ public class GUI extends javax.swing.JFrame {
 
     private void AddItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddItemButtonActionPerformed
         // TODO add your handling code here:
-        TambahItemGUI add = new TambahItemGUI(this,true,null);
+        conTable.UpdateItemIDs(this);
+        TambahItemGUI add = new TambahItemGUI(this,true);
         add.setVisible(true);
     }//GEN-LAST:event_AddItemButtonActionPerformed
 
@@ -656,145 +527,38 @@ public class GUI extends javax.swing.JFrame {
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         // TODO add your handling code here:
-        fetchData();
-        setupGudang();
-        setupController();
+        conTable.fetchFiltered(this);
+        conGudang.setupGudang(this);
+        conGudang.setupUnitCombo(this);
+        conKategori.setupKategoriCombo(this);
     }//GEN-LAST:event_formWindowGainedFocus
 
     private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerformed
         // TODO add your handling code here:
-        int rowindex = jTable2.getSelectedRow();
-        if (rowindex != -1) {
-            int uniqueID = (int) jTable2.getValueAt(rowindex, 0);
-            String sql;
-            String expire = (String) jTable2.getValueAt(rowindex, 6);
-            if ("-".equals(expire)){
-                sql = "DELETE FROM item WHERE uniqueID = '"+uniqueID+"'";
-            } else {
-                sql = "DELETE FROM itemperishable WHERE uniqueID = '"+uniqueID+"'";
-            }
-            
-            db.connect();
-            db.query(sql);
-            db.disconnect();
-            fetchData();
-            setupGudang();
-            setupController();
+        int[] selected = jTable2.getSelectedRows();
+        int[] selectedUID = new int[selected.length];
+        ArrayList<String> perishable = new ArrayList<>();
+        for (int i = 0; i < selected.length; i++){
+            selectedUID[i] = (int) jTable2.getValueAt(selected[i], 0);
+            perishable.add((String) jTable2.getValueAt(selected[i], 6));
         }
-        
+
+        if (selected.length != 0){
+            for (int i = 0; i < selected.length; i++){
+                if (perishable.get(i).equals("-")) {
+                    conItem.deleteSelected(this, selectedUID[i]);
+                } else {
+                    conItemPe.deleteSelected(this, selectedUID[i]);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a row first.");
+        }
     }//GEN-LAST:event_buttonDeleteActionPerformed
 
     private void SearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchButtonActionPerformed
         // TODO add your handling code here:
-        String lokasi = (String) comboUnit.getSelectedItem();
-        String kategori = (String) comboKategori.getSelectedItem();
-        String perishable = (String) comboPerishable.getSelectedItem();
-        String nama = fieldNama.getText();
-        String pid = fieldPID.getText();
-        String id = fieldID.getText();
-        String sql;
-
-        if (lokasi.equals("Any")) {
-            lokasi = "";
-        }
-        if (kategori.equals("Any")) {
-            kategori = "";
-        }
-        if (perishable.equals("Any")) {
-            perishable = "";
-        }
-        if(perishable.equals("Non-Perishable")){
-            sql = "SELECT * FROM item WHERE lokasi LIKE '%"+lokasi+"%' AND kategori LIKE '%"+kategori+"%' AND nama LIKE '%"+nama+"%' AND produkID LIKE '%"+pid+"%' AND uniqueID LIKE '%"+id+"%'";
-            db.connect();
-            database.rs = db.view(sql);
-            try {
-                DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-                model.setRowCount(0); 
-                while (database.rs.next()) {
-
-                    int uniqueID = database.rs.getInt(1);
-                    int produkID = database.rs.getInt(2);
-                    String itemName = database.rs.getString(3);
-                    String kategori2 = database.rs.getString(4);
-                    String lokasi2 = database.rs.getString(5);
-                    int quantity = database.rs.getInt(6);
-
-                    Object[] row = { uniqueID, produkID, itemName, kategori2, lokasi2, quantity, "-"};
-                    model.addRow(row);
-                }
-
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-            db.disconnect();
-        } else if (perishable.equals("Perishable")) {
-            sql = "SELECT * FROM itemperishable WHERE lokasi LIKE '%"+lokasi+"%' AND kategori LIKE '%"+kategori+"%' AND nama LIKE '%"+nama+"%' AND produkID LIKE '%"+pid+"%' AND uniqueID LIKE '%"+id+"%'";
-            db.connect();
-            database.rs = db.view(sql);
-            try {
-                DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-                model.setRowCount(0); 
-                while (database.rs.next()) {
-
-                    int uniqueID = database.rs.getInt(1);
-                    int produkID = database.rs.getInt(2);
-                    String itemName = database.rs.getString(3);
-                    String kategori2 = database.rs.getString(4);
-                    String lokasi2 = database.rs.getString(5);
-                    int quantity = database.rs.getInt(6);
-                    String expire = database.rs.getString(7);
-
-                    Object[] row = { uniqueID, produkID, itemName, kategori2, lokasi2, quantity, expire};
-                    model.addRow(row);
-                }
-
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-            db.disconnect();
-
-        } else {
-            sql = "SELECT * FROM item WHERE lokasi LIKE '%"+lokasi+"%' AND kategori LIKE '%"+kategori+"%' AND nama LIKE '%"+nama+"%' AND produkID LIKE '%"+pid+"%' AND uniqueID LIKE '%"+id+"%'";
-            db.connect();
-            database.rs = db.view(sql);
-            try {
-                DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-                model.setRowCount(0); 
-                while (database.rs.next()) {
-
-                    int uniqueID = database.rs.getInt(1);
-                    int produkID = database.rs.getInt(2);
-                    String itemName = database.rs.getString(3);
-                    String kategori2 = database.rs.getString(4);
-                    String lokasi2 = database.rs.getString(5);
-                    int quantity = database.rs.getInt(6);
-
-                    Object[] row = { uniqueID, produkID, itemName, kategori2, lokasi2, quantity, "-"};
-                    model.addRow(row);
-                }
-                sql = "SELECT * FROM itemperishable WHERE lokasi LIKE '%"+lokasi+"%' AND kategori LIKE '%"+kategori+"%' AND nama LIKE '%"+nama+"%' AND produkID LIKE '%"+pid+"%' AND uniqueID LIKE '%"+id+"%'";
-                database.rs = db.view(sql);
-                while (database.rs.next()) {
-
-                    int uniqueID = database.rs.getInt(1);
-                    int produkID = database.rs.getInt(2);
-                    String itemName = database.rs.getString(3);
-                    String kategori2 = database.rs.getString(4);
-                    String lokasi2 = database.rs.getString(5);
-                    int quantity = database.rs.getInt(6);
-                    String expire = database.rs.getString(7);
-
-                    Object[] row = { uniqueID, produkID, itemName, kategori2, lokasi2, quantity, expire};
-                    model.addRow(row);
-                }
-                
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-        
-        
-
+        conTable.fetchFiltered(this);
     }//GEN-LAST:event_SearchButtonActionPerformed
 
     /**
@@ -839,12 +603,12 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton EditItemButton;
     private javax.swing.JButton SearchButton;
     private javax.swing.JButton buttonDelete;
-    private javax.swing.JComboBox<String> comboKategori;
-    private javax.swing.JComboBox<String> comboPerishable;
-    private javax.swing.JComboBox<String> comboUnit;
-    private javax.swing.JTextField fieldID;
-    private javax.swing.JTextField fieldNama;
-    private javax.swing.JTextField fieldPID;
+    public javax.swing.JComboBox<String> comboKategori;
+    public javax.swing.JComboBox<String> comboPerishable;
+    public javax.swing.JComboBox<String> comboUnit;
+    public javax.swing.JTextField fieldID;
+    public javax.swing.JTextField fieldNama;
+    public javax.swing.JTextField fieldPID;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -864,6 +628,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable2;
+    public javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
 }
