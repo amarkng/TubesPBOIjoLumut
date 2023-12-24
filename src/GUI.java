@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -31,7 +32,17 @@ public class GUI extends javax.swing.JFrame {
         fetchData();
         setupGudang();
         setupController();
+        setupUnitCombo();
         //System.out.println(Gudang.get(0).controller.getListItem().get(0).getItemName());
+    }
+    
+    public final void setupUnitCombo(){
+        DefaultComboBoxModel<String> newmodel = new DefaultComboBoxModel<>();
+        newmodel.addElement("Any");
+        for (int i = 0; i < GUI.Gudang.size(); i++) {
+            newmodel.addElement(GUI.Gudang.get(i).getTempatStorage());
+        }
+        comboUnit.setModel(newmodel);
     }
     
     public final void setupController() {
@@ -151,16 +162,20 @@ public class GUI extends javax.swing.JFrame {
         jPanel11 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jComboBox4 = new javax.swing.JComboBox<>();
+        comboPerishable = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
-        jComboBox5 = new javax.swing.JComboBox<>();
+        comboKategori = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        fieldID = new javax.swing.JTextField();
         SearchButton = new javax.swing.JButton();
+        fieldPID = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        fieldNama = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
         jPanel12 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
-        jComboBox6 = new javax.swing.JComboBox<>();
+        comboUnit = new javax.swing.JComboBox<>();
         jPanel13 = new javax.swing.JPanel();
         jLabel21 = new javax.swing.JLabel();
         jButton9 = new javax.swing.JButton();
@@ -267,23 +282,38 @@ public class GUI extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jLabel7.setText("Perishable");
 
-        jComboBox4.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Any", "Perishable", "Non-Perishable" }));
+        comboPerishable.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        comboPerishable.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Any", "Perishable", "Non-Perishable" }));
 
         jLabel8.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jLabel8.setText("Kategori");
 
-        jComboBox5.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jComboBox5.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Any", "Soda", "Helm", "Sendal" }));
+        comboKategori.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        comboKategori.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Any", "Soda", "Helm", "Sendal" }));
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel9.setText("ID");
 
-        jTextField2.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        fieldID.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
 
         SearchButton.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         SearchButton.setText("Search");
         SearchButton.setAlignmentX(0.5F);
+        SearchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SearchButtonActionPerformed(evt);
+            }
+        });
+
+        fieldPID.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel11.setText("Produk ID");
+
+        fieldNama.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel12.setText("Nama Produk");
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
@@ -296,15 +326,23 @@ public class GUI extends javax.swing.JFrame {
                     .addGroup(jPanel11Layout.createSequentialGroup()
                         .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
-                            .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(comboPerishable, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8)
-                            .addComponent(jComboBox5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(comboKategori, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(fieldID, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel11)
+                            .addComponent(fieldPID, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel12)
+                            .addComponent(fieldNama, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(SearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -319,16 +357,23 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(jLabel8)
                     .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboPerishable)
+                    .addComponent(comboKategori, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fieldID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jComboBox5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jComboBox4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(fieldPID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(fieldNama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(27, 27, 27)
                 .addComponent(SearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(14, 14, 14))
         );
 
         jLabel10.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
@@ -338,11 +383,11 @@ public class GUI extends javax.swing.JFrame {
         jLabel17.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jLabel17.setText("Pilih Unit Gudang");
 
-        jComboBox6.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
-        jComboBox6.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BDG-1", "JKT-1", "BDG-2" }));
-        jComboBox6.addActionListener(new java.awt.event.ActionListener() {
+        comboUnit.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
+        comboUnit.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BDG-1", "JKT-1", "BDG-2" }));
+        comboUnit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox6ActionPerformed(evt);
+                comboUnitActionPerformed(evt);
             }
         });
 
@@ -355,7 +400,7 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox6, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboUnit, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel12Layout.setVerticalGroup(
@@ -365,7 +410,7 @@ public class GUI extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel17)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox6)
+                .addComponent(comboUnit)
                 .addContainerGap())
         );
 
@@ -507,7 +552,7 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(jLabel25)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton9)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -528,15 +573,15 @@ public class GUI extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
+                .addComponent(jScrollPane2)
                 .addGap(22, 22, 22))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(9, 9, 9)
                 .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -548,16 +593,16 @@ public class GUI extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox6ActionPerformed
+    private void comboUnitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboUnitActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox6ActionPerformed
+    }//GEN-LAST:event_comboUnitActionPerformed
 
     private void AddGudangButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddGudangButtonActionPerformed
         TambahGudangGUI edit = new TambahGudangGUI(this,true);
@@ -620,6 +665,119 @@ public class GUI extends javax.swing.JFrame {
         
     }//GEN-LAST:event_buttonDeleteActionPerformed
 
+    private void SearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchButtonActionPerformed
+        // TODO add your handling code here:
+        String lokasi = (String) comboUnit.getSelectedItem();
+        String kategori = (String) comboKategori.getSelectedItem();
+        String perishable = (String) comboPerishable.getSelectedItem();
+        String nama = fieldNama.getText();
+        String pid = fieldPID.getText();
+        String id = fieldID.getText();
+        String sql;
+
+        if (lokasi.equals("Any")) {
+            lokasi = "";
+        }
+        if (kategori.equals("Any")) {
+            kategori = "";
+        }
+        if (perishable.equals("Any")) {
+            perishable = "";
+        }
+        if(perishable.equals("Non-Perishable")){
+            sql = "SELECT * FROM item WHERE lokasi LIKE '%"+lokasi+"%' AND kategori LIKE '%"+kategori+"%' AND nama LIKE '%"+nama+"%' AND produkID LIKE '%"+pid+"%' AND uniqueID LIKE '%"+id+"%'";
+            db.connect();
+            database.rs = db.view(sql);
+            try {
+                DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+                model.setRowCount(0); 
+                while (database.rs.next()) {
+
+                    int uniqueID = database.rs.getInt(1);
+                    int produkID = database.rs.getInt(2);
+                    String itemName = database.rs.getString(3);
+                    String kategori2 = database.rs.getString(4);
+                    String lokasi2 = database.rs.getString(5);
+                    int quantity = database.rs.getInt(6);
+
+                    Object[] row = { uniqueID, produkID, itemName, kategori2, lokasi2, quantity, "-"};
+                    model.addRow(row);
+                }
+
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            db.disconnect();
+        } else if (perishable.equals("Perishable")) {
+            sql = "SELECT * FROM itemperishable WHERE lokasi LIKE '%"+lokasi+"%' AND kategori LIKE '%"+kategori+"%' AND nama LIKE '%"+nama+"%' AND produkID LIKE '%"+pid+"%' AND uniqueID LIKE '%"+id+"%'";
+            db.connect();
+            database.rs = db.view(sql);
+            try {
+                DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+                model.setRowCount(0); 
+                while (database.rs.next()) {
+
+                    int uniqueID = database.rs.getInt(1);
+                    int produkID = database.rs.getInt(2);
+                    String itemName = database.rs.getString(3);
+                    String kategori2 = database.rs.getString(4);
+                    String lokasi2 = database.rs.getString(5);
+                    int quantity = database.rs.getInt(6);
+                    String expire = database.rs.getString(7);
+
+                    Object[] row = { uniqueID, produkID, itemName, kategori2, lokasi2, quantity, expire};
+                    model.addRow(row);
+                }
+
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            db.disconnect();
+
+        } else {
+            sql = "SELECT * FROM item WHERE lokasi LIKE '%"+lokasi+"%' AND kategori LIKE '%"+kategori+"%' AND nama LIKE '%"+nama+"%' AND produkID LIKE '%"+pid+"%' AND uniqueID LIKE '%"+id+"%'";
+            db.connect();
+            database.rs = db.view(sql);
+            try {
+                DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+                model.setRowCount(0); 
+                while (database.rs.next()) {
+
+                    int uniqueID = database.rs.getInt(1);
+                    int produkID = database.rs.getInt(2);
+                    String itemName = database.rs.getString(3);
+                    String kategori2 = database.rs.getString(4);
+                    String lokasi2 = database.rs.getString(5);
+                    int quantity = database.rs.getInt(6);
+
+                    Object[] row = { uniqueID, produkID, itemName, kategori2, lokasi2, quantity, "-"};
+                    model.addRow(row);
+                }
+                sql = "SELECT * FROM itemperishable WHERE lokasi LIKE '%"+lokasi+"%' AND kategori LIKE '%"+kategori+"%' AND nama LIKE '%"+nama+"%' AND produkID LIKE '%"+pid+"%' AND uniqueID LIKE '%"+id+"%'";
+                database.rs = db.view(sql);
+                while (database.rs.next()) {
+
+                    int uniqueID = database.rs.getInt(1);
+                    int produkID = database.rs.getInt(2);
+                    String itemName = database.rs.getString(3);
+                    String kategori2 = database.rs.getString(4);
+                    String lokasi2 = database.rs.getString(5);
+                    int quantity = database.rs.getInt(6);
+                    String expire = database.rs.getString(7);
+
+                    Object[] row = { uniqueID, produkID, itemName, kategori2, lokasi2, quantity, expire};
+                    model.addRow(row);
+                }
+                
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        
+        
+
+    }//GEN-LAST:event_SearchButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -662,11 +820,16 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton EditItemButton;
     private javax.swing.JButton SearchButton;
     private javax.swing.JButton buttonDelete;
+    private javax.swing.JComboBox<String> comboKategori;
+    private javax.swing.JComboBox<String> comboPerishable;
+    private javax.swing.JComboBox<String> comboUnit;
+    private javax.swing.JTextField fieldID;
+    private javax.swing.JTextField fieldNama;
+    private javax.swing.JTextField fieldPID;
     private javax.swing.JButton jButton9;
-    private javax.swing.JComboBox<String> jComboBox4;
-    private javax.swing.JComboBox<String> jComboBox5;
-    private javax.swing.JComboBox<String> jComboBox6;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
@@ -685,6 +848,5 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 }
