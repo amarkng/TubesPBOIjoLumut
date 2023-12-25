@@ -155,7 +155,6 @@ public class GUI extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jTable2.setColumnSelectionAllowed(true);
         jTable2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jTable2.setPreferredSize(new java.awt.Dimension(400, 620));
         jTable2.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -589,11 +588,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void buttonExpiredActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonExpiredActionPerformed
         // TODO add your handling code here:
-        if (jTable2.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(this, "Please select any row first.");
-        } else {
             conTable.selectExpired(this);
-        }
     }//GEN-LAST:event_buttonExpiredActionPerformed
 
     /**
