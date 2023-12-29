@@ -66,6 +66,14 @@ public class controllerGudang {
         tambahItemGUI.comboGudang.setModel(newmodel);
     }
     
+    void gudangComboDelete(DeleteGudangGUI deletegudangGUI) {
+        DefaultComboBoxModel<String> newmodel = new DefaultComboBoxModel<>();
+        for (int i = 0; i < GUI.Gudang.size(); i++) {
+            newmodel.addElement(GUI.Gudang.get(i).getTempatStorage());
+        }
+        deletegudangGUI.comboGudang.setModel(newmodel);
+    }
+    
     boolean cekPenuh(String gudang){
         int besar = 0;
         for (int i = 0; i < GUI.Gudang.size(); i++) {
@@ -105,5 +113,16 @@ public class controllerGudang {
             Logger.getLogger(controllerGudang.class.getName()).log(Level.SEVERE, null, ex);
         }
         return jumlah + qua > besar;
+    }
+    
+    public void deleteGudang(String tempatstorage) {
+        String sql = "DELETE FROM gudang WHERE tempatstorage = '" + tempatstorage + "'";
+        db.connect();
+        db.query(sql);
+        db.disconnect();
+        sql = "DELETE FROM item WHERE lokasi = '" + tempatstorage + "'";
+        db.connect();
+        db.query(sql);
+        db.disconnect();
     }
 }

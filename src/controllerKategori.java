@@ -13,6 +13,8 @@ import javax.swing.DefaultComboBoxModel;
  * @author ImNotplying
  */
 public class controllerKategori {
+    
+    private database db = new database();
 
     public final void setupKategoriCombo(GUI gui) {
         gui.db.connect();
@@ -50,6 +52,22 @@ public class controllerKategori {
         }
         tambahItemGUI.db.disconnect();
     }
+    
+    void kategoriComboDelete(DeleteKategoriGUI deletekategoriGUI) {
+        db.connect();
+        String sql = "SELECT kategori FROM kategori";
+        database.rs = db.view(sql);
+        try {
+            DefaultComboBoxModel<String> newmodel = new DefaultComboBoxModel<>();
+            while (database.rs.next()) {
+                newmodel.addElement(database.rs.getString("kategori"));
+            }
+            deletekategoriGUI.comboKategori.setModel(newmodel);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        db.disconnect();
+    }
 
     void addKategori(TambahKategoriGUI tambahKategoriGUI) {
         GUI.latestKID++;
@@ -74,6 +92,17 @@ public class controllerKategori {
             e.printStackTrace();
         }
         editItemGUI.db.disconnect();
+    }
+    
+    public void deleteKategori(String kategori) {
+        String sql = "DELETE FROM kategori WHERE kategori = '" + kategori + "'";
+        db.connect();
+        db.query(sql);
+        db.disconnect();
+        sql = "DELETE FROM item WHERE kategori = '" + kategori + "'";
+        db.connect();
+        db.query(sql);
+        db.disconnect();
     }
     
 }

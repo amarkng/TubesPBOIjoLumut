@@ -30,25 +30,25 @@ public class controllerTable {
             model.setRowCount(0);
             while (database.rs.next()) {
                 int uniqueID = database.rs.getInt(1);
-                int produkID = database.rs.getInt(2);
+                //int produkID = database.rs.getInt(2);
                 String itemName = database.rs.getString(3);
                 String kategori = database.rs.getString(4);
                 String lokasi = database.rs.getString(5);
                 int quantity = database.rs.getInt(6);
-                Object[] row = {uniqueID, produkID, itemName, kategori, lokasi, quantity, "-"};
+                Object[] row = {uniqueID, itemName, kategori, lokasi, quantity, "-"};
                 model.addRow(row);
             }
             cari = "SELECT * FROM itemperishable";
             database.rs = gui.db.view(cari);
             while (database.rs.next()) {
                 int uniqueID = database.rs.getInt(1);
-                int produkID = database.rs.getInt(2);
+                //int produkID = database.rs.getInt(2);
                 String itemName = database.rs.getString(3);
                 String kategori = database.rs.getString(4);
                 String lokasi = database.rs.getString(5);
                 int quantity = database.rs.getInt(6);
                 String expire = database.rs.getString(7);
-                Object[] row = {uniqueID, produkID, itemName, kategori, lokasi, quantity, expire};
+                Object[] row = {uniqueID, itemName, kategori, lokasi, quantity, expire};
                 model.addRow(row);
             }
         } catch (SQLException e) {
@@ -84,12 +84,12 @@ public class controllerTable {
                 model.setRowCount(0);
                 while (database.rs.next()) {
                     int uniqueID = database.rs.getInt(1);
-                    int produkID = database.rs.getInt(2);
+                    //int produkID = database.rs.getInt(2);
                     String itemName = database.rs.getString(3);
                     String kategori2 = database.rs.getString(4);
                     String lokasi2 = database.rs.getString(5);
                     int quantity = database.rs.getInt(6);
-                    Object[] row = {uniqueID, produkID, itemName, kategori2, lokasi2, quantity, "-"};
+                    Object[] row = {uniqueID, itemName, kategori2, lokasi2, quantity, "-"};
                     model.addRow(row);
                 }
             } catch (SQLException e) {
@@ -105,13 +105,13 @@ public class controllerTable {
                 model.setRowCount(0);
                 while (database.rs.next()) {
                     int uniqueID = database.rs.getInt(1);
-                    int produkID = database.rs.getInt(2);
+                    //int produkID = database.rs.getInt(2);
                     String itemName = database.rs.getString(3);
                     String kategori2 = database.rs.getString(4);
                     String lokasi2 = database.rs.getString(5);
                     int quantity = database.rs.getInt(6);
                     String expire = database.rs.getString(7);
-                    Object[] row = {uniqueID, produkID, itemName, kategori2, lokasi2, quantity, expire};
+                    Object[] row = {uniqueID, itemName, kategori2, lokasi2, quantity, expire};
                     model.addRow(row);
                 }
             } catch (SQLException e) {
@@ -127,19 +127,19 @@ public class controllerTable {
                 model.setRowCount(0);
                 while (database.rs.next()) {
                     int uniqueID = database.rs.getInt(1);
-                    int produkID = database.rs.getInt(2);
+                    //int produkID = database.rs.getInt(2);
                     String itemName = database.rs.getString(3);
                     String kategori2 = database.rs.getString(4);
                     String lokasi2 = database.rs.getString(5);
                     int quantity = database.rs.getInt(6);
-                    Object[] row = {uniqueID, produkID, itemName, kategori2, lokasi2, quantity, "-"};
+                    Object[] row = {uniqueID, itemName, kategori2, lokasi2, quantity, "-"};
                     model.addRow(row);
                 }
                 sql = "SELECT * FROM itemperishable WHERE lokasi LIKE '%" + lokasi + "%' AND kategori LIKE '%" + kategori + "%' AND nama LIKE '%" + nama + "%' AND produkID LIKE '%" + pid + "%' AND uniqueID LIKE '%" + id + "%'";
                 database.rs = gui.db.view(sql);
                 while (database.rs.next()) {
                     int uniqueID = database.rs.getInt(1);
-                    int produkID = database.rs.getInt(2);
+                    //int produkID = database.rs.getInt(2);
                     String itemName = database.rs.getString(3);
                     String kategori2 = database.rs.getString(4);
                     String lokasi2 = database.rs.getString(5);
@@ -147,7 +147,7 @@ public class controllerTable {
                     Date expireDate = database.rs.getDate(7);
                     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                     String strExpireDate = formatter.format(expireDate);
-                    Object[] row = {uniqueID, produkID, itemName, kategori2, lokasi2, quantity, strExpireDate};
+                    Object[] row = {uniqueID, itemName, kategori2, lokasi2, quantity, strExpireDate};
                     model.addRow(row);
                 }
             } catch (SQLException e) {
