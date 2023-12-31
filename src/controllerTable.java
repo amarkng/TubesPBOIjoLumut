@@ -63,7 +63,7 @@ public class controllerTable {
         String kategori = (String) gui.comboKategori.getSelectedItem();
         String perishable = (String) gui.comboPerishable.getSelectedItem();
         String nama = gui.fieldNama.getText();
-        String pid = gui.fieldPID.getText();
+        //String pid = gui.fieldPID.getText();
         String id = gui.fieldID.getText();
         String sql;
         if (lokasi.equals("Any")) {
@@ -76,7 +76,7 @@ public class controllerTable {
             perishable = "";
         }
         if (perishable.equals("Non-Perishable")) {
-            sql = "SELECT * FROM item WHERE lokasi LIKE '%" + lokasi + "%' AND kategori LIKE '%" + kategori + "%' AND nama LIKE '%" + nama + "%' AND produkID LIKE '%" + pid + "%' AND uniqueID LIKE '%" + id + "%'";
+            sql = "SELECT * FROM item WHERE lokasi LIKE '%" + lokasi + "%' AND kategori LIKE '%" + kategori + "%' AND nama LIKE '%" + nama + "%' AND uniqueID LIKE '%" + id + "%'";
             gui.db.connect();
             database.rs = gui.db.view(sql);
             try {
@@ -97,7 +97,7 @@ public class controllerTable {
             }
             gui.db.disconnect();
         } else if (perishable.equals("Perishable")) {
-            sql = "SELECT * FROM itemperishable WHERE lokasi LIKE '%" + lokasi + "%' AND kategori LIKE '%" + kategori + "%' AND nama LIKE '%" + nama + "%' AND produkID LIKE '%" + pid + "%' AND uniqueID LIKE '%" + id + "%'";
+            sql = "SELECT * FROM itemperishable WHERE lokasi LIKE '%" + lokasi + "%' AND kategori LIKE '%" + kategori + "%' AND nama LIKE '%" + nama + "%' AND uniqueID LIKE '%" + id + "%'";
             gui.db.connect();
             database.rs = gui.db.view(sql);
             try {
@@ -119,7 +119,7 @@ public class controllerTable {
             }
             gui.db.disconnect();
         } else {
-            sql = "SELECT * FROM item WHERE lokasi LIKE '%" + lokasi + "%' AND kategori LIKE '%" + kategori + "%' AND nama LIKE '%" + nama + "%' AND produkID LIKE '%" + pid + "%' AND uniqueID LIKE '%" + id + "%'";
+            sql = "SELECT * FROM item WHERE lokasi LIKE '%" + lokasi + "%' AND kategori LIKE '%" + kategori + "%' AND nama LIKE '%" + nama + "%' AND uniqueID LIKE '%" + id + "%'";
             gui.db.connect();
             database.rs = gui.db.view(sql);
             try {
@@ -135,7 +135,7 @@ public class controllerTable {
                     Object[] row = {uniqueID, itemName, kategori2, lokasi2, quantity, "-"};
                     model.addRow(row);
                 }
-                sql = "SELECT * FROM itemperishable WHERE lokasi LIKE '%" + lokasi + "%' AND kategori LIKE '%" + kategori + "%' AND nama LIKE '%" + nama + "%' AND produkID LIKE '%" + pid + "%' AND uniqueID LIKE '%" + id + "%'";
+                sql = "SELECT * FROM itemperishable WHERE lokasi LIKE '%" + lokasi + "%' AND kategori LIKE '%" + kategori + "%' AND nama LIKE '%" + nama + "%' AND uniqueID LIKE '%" + id + "%'";
                 database.rs = gui.db.view(sql);
                 while (database.rs.next()) {
                     int uniqueID = database.rs.getInt(1);
