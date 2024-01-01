@@ -546,11 +546,11 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         int selected = jTable2.getSelectedRow();
         if (selected != -1){
-            String nama = (String) jTable2.getValueAt(selected, 2);
-            String kategori = (String) jTable2.getValueAt(selected, 3);
-            String gudang = (String) jTable2.getValueAt(selected, 4);
-            int quantity = (int) jTable2.getValueAt(selected, 5);
-            String perishable = (String) jTable2.getValueAt(selected, 6);
+            String nama = (String) jTable2.getValueAt(selected, 1);
+            String kategori = (String) jTable2.getValueAt(selected, 2);
+            String gudang = (String) jTable2.getValueAt(selected, 3);
+            int quantity = (int) jTable2.getValueAt(selected, 4);
+            String perishable = (String) jTable2.getValueAt(selected, 5);
             int uid = (int) jTable2.getValueAt(selected, 0);
             EditItemGUI edit = new EditItemGUI(this,true, nama, kategori, gudang, quantity, perishable, uid);
             edit.setVisible(true);
@@ -593,7 +593,7 @@ public class GUI extends javax.swing.JFrame {
         ArrayList<String> perishable = new ArrayList<>();
         for (int i = 0; i < selected.length; i++){
             selectedUID[i] = (int) jTable2.getValueAt(selected[i], 0);
-            perishable.add((String) jTable2.getValueAt(selected[i], 6));
+            perishable.add((String) jTable2.getValueAt(selected[i], 5));
         }
 
         if (selected.length != 0){
