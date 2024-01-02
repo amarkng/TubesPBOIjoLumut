@@ -100,8 +100,10 @@ public class controllerKategori {
         db.query(sql);
         db.disconnect();
         sql = "DELETE FROM item WHERE kategori = '" + kategori + "'";
+        String sql_2 = "DELETE FROM itemperishable WHERE kategori = '" + kategori + "'";
         db.connect();
         db.query(sql);
+        db.query(sql_2);
         db.disconnect();
     }
     
