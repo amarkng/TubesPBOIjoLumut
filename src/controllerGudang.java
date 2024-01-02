@@ -116,13 +116,15 @@ public class controllerGudang {
     }
     
     public void deleteGudang(String tempatstorage) {
-        String sql = "DELETE FROM gudang WHERE tempatstorage = '" + tempatstorage + "'";
+        String sql_1 = "DELETE FROM gudang WHERE tempatstorage = '" + tempatstorage + "'";
         db.connect();
-        db.query(sql);
+        db.query(sql_1);
         db.disconnect();
-        sql = "DELETE FROM item WHERE lokasi = '" + tempatstorage + "'";
+        String sql_2 = "DELETE FROM item WHERE lokasi = '" + tempatstorage + "'";
+        String sql_3 = "DELETE FROM itemperishable WHERE lokasi = '" + tempatstorage + "'";
         db.connect();
-        db.query(sql);
+        db.query(sql_2);
+        db.query(sql_3);
         db.disconnect();
     }
 }
